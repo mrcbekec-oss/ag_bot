@@ -55,7 +55,7 @@ input{flex:1;background:var(--in);color:#fff;border:0;border-radius:8px;padding:
 const SINIRSIZ_ID = "123123";          // sınırsız kullanım
 const SURE_DK = 10;                    // diğer ID'ler için toplam süre (dakika)
 
-/* ===== 100 CEVAP / 1.000 SORU VARYASYONU ===== */
+/* ===== 133 CEVAP / 1.330 SORU VARYASYONU ===== */
 const niyetler = [
   ["merhaba", "Merhaba! Ben AG Bot. Seninle sohbet etmeye hazırım."],
   ["selam", "Selam! Nasıl yardımcı olayım?"],
@@ -64,8 +64,12 @@ const niyetler = [
   ["iyi geceler", "İyi geceler, güzel rüyalar!"],
   ["naber", "İyidir, senden naber?"],
   ["nasılsın", "İyiyim, teşekkürler! Sen nasılsın?"],
-  ["napıyon", "Seninle sohbet ediyorum. Sen napıyon?"],
-  ["ne yapıyorsun", "Şu an mesajını cevaplıyorum!"],
+  ["napıyon", "Seninle sohbet ediyorum! Sen napıyon, neler yapıyorsun?"],
+  ["sen napıyon", "Seninle sohbet ediyorum! Sen neler yapıyorsun?"],
+  ["sen napıyorsun", "Şu an sana yazıyorum! Sen neler yapıyorsun?"],
+  ["sen ne yapıyorsun", "Mesajlarına cevap veriyorum! Peki sen neler yapıyorsun?"],
+  ["ne yapıyosun", "Şu an seninle sohbet ediyorum! Sen ne yapıyorsun?"],
+  ["ne yapıyorsun", "Sorularını cevaplıyorum! Sen şu an ne yapıyorsun?"],
   ["keyifler nasıl", "Gayet iyi, sohbet daha da güzelleştirdi!"],
   ["adın ne", "Benim adım AG Bot."],
   ["kimsin", "Ben AG Bot, sohbet etmek için hazırlanmış küçük bir botum."],
@@ -140,7 +144,7 @@ const niyetler = [
   ["emoji gönder", "🙂✨🤖"],
   ["bir sayı söyle", "7! Kulağa şanslı bir sayı gibi geliyor."],
   ["bir renk söyle", "Turkuaz! Maviyle yeşilin güzel bir karışımı."],
-  ["kaç soru biliyorsun", "Bu sayfada 100 farklı cevap ve her biri için 10 soru kalıbı var."],
+  ["kaç soru biliyorsun", "Bu sayfada 133 farklı cevap ve her biri için 10 soru kalıbı var."],
   ["cevapların hazır mı", "Evet, bu sayfadaki cevaplar önceden yazılmıştır; internetten yeni bilgi almıyorum."],
   ["beni duyuyor musun", "Sesini duyamam ama buraya yazdığın mesajları okuyabilirim."],
   ["fotoğraf görebiliyor musun", "Hayır, bu sohbet yalnızca yazdığın mesajları işler."],
@@ -156,7 +160,36 @@ const niyetler = [
   ["kedileri sever misin", "Kedi videoları internette çok popüler! Sen kedi sever misin?"],
   ["köpekleri sever misin", "Köpekler sadık dostlar olarak bilinir. Senin bir köpeğin var mı?"],
   ["en sevdiğin mevsim ne", "Gerçek bir tercihim yok ama ilkbaharın havası pek çok kişiye iyi geliyor."],
-  ["napıyon kanka", "Buradayım kanka, seninle sohbet ediyorum!"]
+  ["napıyon kanka", "Buradayım kanka, seninle sohbet ediyorum! Sen napıyorsun?"],
+  ["ben iyiyim", "İyi olmana sevindim! Bugün neler yapıyorsun?"],
+  ["iyiyim", "Süper, iyi olmana sevindim! Bugün neler yapıyorsun?"],
+  ["fena değilim", "Güzel! Umarım günün daha da iyi geçer. Neler yapıyorsun?"],
+  ["ben de iyiyim", "İkimizin de iyi olmasına sevindim! Şu an ne yapıyorsun?"],
+  ["sen nasılsın", "İyiyim, teşekkür ederim! Senin günün nasıl geçiyor?"],
+  ["bugün ne yaptın", "Benim gerçek bir günüm yok; sen bugün neler yaptın?"],
+  ["ne konuşalım", "İstersen oyunlardan, müzikten, okuldan ya da sevdiğin şeylerden konuşalım."],
+  ["muhabbet edelim", "Olur! Bugün başına gelen en güzel şey neydi?"],
+  ["çok sıkıldım", "Hadi bir konu seçelim: oyun, müzik, film ya da komik bir bilmece!"],
+  ["oyun öner", "Kelime oyunu oynayabiliriz: Ben bir kelime söyleyeyim, sen son harfiyle yeni kelime bul."],
+  ["kelime oyunu oynayalım", "Tamam! İlk kelime: bulut. Şimdi son harfi olan T ile başlayan bir kelime söyle!"],
+  ["şarkı öner", "Canlı müzik listelerine erişemiyorum; sevdiğin türü söylersen tarzına uygun öneri düşünebilirim."],
+  ["resim yapmayı seviyorum", "Ne güzel! En çok ne çizmeyi seviyorsun?"],
+  ["spor yapıyorum", "Harika! Hangi sporu yapıyorsun? Kendini zorlamadan devam et."],
+  ["dışarı çıkıyorum", "İyi gezmeler! Nereye gidiyorsun?"],
+  ["evdeyim", "Evde keyif yapıyorsun demek! Evde ne yapmayı seversin?"],
+  ["okuldayım", "Kolay gelsin! Bugün hangi derslerin var?"],
+  ["işteyim", "Kolay gelsin! İşlerin yoğun mu bugün?"],
+  ["mola veriyorum", "İyi fikir! Molanda biraz dinlenip su içebilirsin."],
+  ["film izliyorum", "Keyifli seyirler! Ne izliyorsun?"],
+  ["müzik dinliyorum", "Güzel! Şu an hangi şarkıyı dinliyorsun?"],
+  ["oyun oynuyorum", "İyi eğlenceler! Hangi oyunu oynuyorsun?"],
+  ["kitap okuyorum", "Keyifli okumalar! Hangi kitabı okuyorsun?"],
+  ["yemek yiyorum", "Afiyet olsun! Ne yiyorsun?"],
+  ["hiçbir şey yapmıyorum", "Bazen boş boş dinlenmek de güzeldir! İstersen sohbet edelim."],
+  ["sana yazıyorum", "Ben de sana cevap yazıyorum! Sohbetimize devam edelim."],
+  ["seni özledim", "Tekrar yazmana sevindim! Neler yapıyorsun?"],
+  ["beni dinle", "Tabii, buradayım. Anlatmak istediğini yazabilirsin."],
+  ["anlatacaklarım var", "Seni dinliyorum, istediğin yerden başlayabilirsin."]
 ];
 
 const temiz = s => s.toLocaleLowerCase("tr").replace(/[?!.,]+/g, " ").replace(/\s+/g, " ").trim();
@@ -181,7 +214,7 @@ const bilgi = Object.fromEntries(niyetler);
 /* ===== KODUN GERİSİ ===== */
 const $ = id => document.getElementById(id);
 const SURE_MS = SURE_DK * 60 * 1000;
-let aktifId = null, sinirsiz = false, sayac = null, bitis = 0;
+let aktifId = null, sinirsiz = false, sayac = null, bitis = 0, cevapBekliyor = false;
 
 const oku = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
 const yazDepo = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
@@ -212,6 +245,47 @@ function bul(s) {
   return p >= 0.72 ? en : null;
 }
 
+const karsilikliNiyetler = new Set([
+  "napıyon", "sen napıyon", "sen napıyorsun", "sen ne yapıyorsun",
+  "ne yapıyosun", "ne yapıyorsun", "napıyon kanka"
+]);
+const aktiviteNiyetleri = new Set([
+  "ders çalışıyorum", "oyun oynuyorum", "film izliyorum", "müzik dinliyorum",
+  "kitap okuyorum", "yemek yiyorum", "spor yapıyorum", "dışarı çıkıyorum",
+  "evdeyim", "okuldayım", "işteyim", "mola veriyorum",
+  "hiçbir şey yapmıyorum", "sana yazıyorum"
+]);
+
+function aktiviteyeCevap(metin) {
+  const s = temiz(metin);
+  if (s.includes("ders") || s.includes("ödev") || s.includes("sınav")) return "Kolay gelsin! Hangi ders üzerinde çalışıyorsun?";
+  if (s.includes("oyun")) return "İyi eğlenceler! Hangi oyunu oynuyorsun?";
+  if (s.includes("film") || s.includes("dizi")) return "Keyifli seyirler! Ne izliyorsun?";
+  if (s.includes("müzik") || s.includes("şarkı")) return "Güzel! Hangi şarkıyı dinliyorsun?";
+  if (s.includes("kitap") || s.includes("okuyorum")) return "Keyifli okumalar! Ne okuyorsun?";
+  if (s.includes("yemek") || s.includes("yiyorum")) return "Afiyet olsun! Ne yiyorsun?";
+  if (s.includes("spor") || s.includes("koşuyorum")) return "Harika! Hangi sporu yapıyorsun?";
+  if (s.includes("uyuyorum") || s.includes("dinleniyorum")) return "İyi dinlenmeler! Sonra yine sohbet ederiz.";
+  if (s.includes("dışarı") || s.includes("geziyorum")) return "İyi gezmeler! Nereye gidiyorsun?";
+  if (s.includes("evdeyim") || s.includes("oturuyorum")) return "Evde keyif yapıyorsun demek! Şu an ne yapıyorsun?";
+  if (s.includes("okuldayım")) return "Kolay gelsin! Bugün hangi derslerin var?";
+  if (s.includes("işteyim")) return "Kolay gelsin! İşlerin yoğun mu bugün?";
+  if (s.includes("mola veriyorum")) return "İyi fikir! Molanda biraz dinlenip su içebilirsin.";
+  if (s.includes("hiçbir şey") || s.includes("hiç bi şey")) return "Bazen dinlenmek de güzeldir! İstersen beraber sohbet edelim.";
+  if (s.includes("sana yaz") || s.includes("sohbet ed")) return "Ben de seninle sohbet ediyorum! Konu olarak ne seçelim?";
+  return "Anladım! Peki yaptığın şey hoşuna gidiyor mu?";
+}
+
+function cevapla(metin) {
+  const soru = temiz(metin), k = bul(soru);
+  if (cevapBekliyor && (!k || aktiviteNiyetleri.has(k))) {
+    cevapBekliyor = false;
+    return aktiviteyeCevap(metin);
+  }
+  cevapBekliyor = karsilikliNiyetler.has(k);
+  return k ? bilgi[k] : "Bunu bilmiyorum.";
+}
+
 function giris() {
   const id = $("idKutu").value.trim();
   if (!id) { $("hata").textContent = "ID gir."; return; }
@@ -219,6 +293,7 @@ function giris() {
     $("hata").textContent = "Bu ID'nin süresi dolmuş."; return;
   }
   aktifId = id; sinirsiz = (id === SINIRSIZ_ID);
+  cevapBekliyor = false;
   $("hata").textContent = ""; $("idKutu").value = "";
   $("giris").classList.add("hidden");
   $("chat").innerHTML = "";
@@ -251,7 +326,7 @@ function sureBitti() {
 
 function cikis() {
   if (!sinirsiz && aktifId && sayac) tik();
-  durdur(); aktifId = null; $("sure").textContent = "";
+  durdur(); aktifId = null; cevapBekliyor = false; $("sure").textContent = "";
   $("giris").classList.remove("hidden"); $("idKutu").focus();
 }
 
@@ -264,8 +339,7 @@ $("f").onsubmit = e => {
   if (!aktifId) return;
   const ham = $("q").value.trim(); if (!ham) return;
   $("q").value = ""; yaz(ham, "me");
-  const k = bul(temiz(ham));
-  yaz(k ? bilgi[k] : "Bunu bilmiyorum.", "bot");
+  yaz(cevapla(ham), "bot");
 };
 
 $("idKutu").focus();

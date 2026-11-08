@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AG Bot</title>
+<style>
+:root{--bg:#1e1f26;--bar:#2b2d38;--in:#3a3d4d;--ac:#4f8cff;--me:#2f5fc4;--bot:#2e3b34}
+*{box-sizing:border-box}
+body{margin:0;height:100vh;display:flex;flex-direction:column;background:var(--bg);color:#fff;font-family:system-ui,Segoe UI,sans-serif}
+header{background:var(--bar);padding:12px 16px;display:flex;align-items:center;gap:8px}
+header h1{font-size:18px;margin:0;flex:1}
+#sure{font-size:13px;color:#ffd479}
+button{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:10px 14px;cursor:pointer;font-size:14px}
+button.g{background:var(--in)}
+#chat{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.m{max-width:80%;padding:9px 13px;border-radius:14px;line-height:1.4;white-space:pre-wrap;word-wrap:break-word}
+.me{align-self:flex-end;background:var(--me)}
+.bot{align-self:flex-start;background:var(--bot)}
+.inf{align-self:center;color:#aaa;font-size:13px;font-style:italic}
+form{display:flex;gap:8px;padding:10px;background:var(--bar)}
+input{flex:1;background:var(--in);color:#fff;border:0;border-radius:8px;padding:12px;font-size:15px;outline:none}
+#giris{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:5}
+#kutu{background:var(--bar);padding:28px;border-radius:14px;width:min(360px,90vw);text-align:center}
+#kutu h2{margin:0 0 6px}
+#kutu p{color:#aaa;font-size:14px;margin:0 0 16px}
+#kutu input{width:100%;margin-bottom:10px;text-align:center}
+#kutu button{width:100%}
+#hata{color:#ff7b7b;font-size:14px;min-height:20px;margin-top:10px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="giris">
+  <div id="kutu">
+    <h2>🤖 AG Bot</h2>
+    <p>Devam etmek için ID'ni gir</p>
+    <input id="idKutu" placeholder="ID" autocomplete="off" inputmode="numeric">
+    <button id="bGiris">Giriş Yap</button>
+    <div id="hata"></div>
+  </div>
+</div>
+
+<header>
+  <h1>🤖 AG Bot</h1>
+  <span id="sure"></span>
+  <button class="g" id="bCikis">Çıkış</button>
+</header>
+<div id="chat"></div>
+<form id="f"><input id="q" placeholder="Bir şey yaz..." autocomplete="off"><button>Gönder</button></form>
+
+<script>
+/* ===== AYARLAR ===== */
+const SINIRSIZ_ID = "123123";          // sınırsız kullanım
+const SURE_DK = 10;                    // diğer ID'ler için toplam süre (dakika)
+
+/* ===== SORU-CEVAPLAR (buraya eklenecek) ===== */
+const bilgi = {
+  "merhaba": "Merhaba! Ben AG Bot.",
+  "adın ne": "Benim adım AG Bot.",
+  "nasılsın": "İyiyim, sen nasılsın?"
+};
+
+/* ===== KODUN GERİSİ ===== */
+const $ = id => document.getElementById(id);
+const SURE_MS = SURE_DK * 60 * 1000;
+let aktifId = null, sinirsiz = false, sayac = null, bitis = 0;
+
+const oku = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const yazDepo = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const kullanilan = id => parseInt(oku("ag_kullanim_" + id) || "0", 10);
+
+function yaz(t, c) {
+  const d = document.createElement("div");
+  d.className = "m " + c; d.textContent = t;
+  $("chat").appendChild(d); $("chat").scrollTop = 1e9;
+}
+const temiz = s => s.toLocaleLowerCase("tr").replace(/[?!.,]+/g, " ").replace(/\s+/g, " ").trim();
+
+function lev(a, b) {
+  const m = [...Array(a.length + 1)].map((_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) m[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    m[i][j] = Math.min(m[i-1][j] + 1, m[i][j-1] + 1, m[i-1][j-1] + (a[i-1] == b[j-1] ? 0 : 1));
+  return m[a.length][b.length];
+}
+const benzerlik = (a, b) => 1 - lev(a, b) / Math.max(a.length, b.length, 1);
+function bul(s) {
+  let en = null, p = 0;
+  for (const k of Object.keys(bilgi)) { const b = benzerlik(s, k); if (b > p) { p = b; en = k; } }
+  return p >= 0.6 ? en : null;
+}
+
+function giris() {
+  const id = $("idKutu").value.trim();
+  if (!id) { $("hata").textContent = "ID gir."; return; }
+  if (id !== SINIRSIZ_ID && kullanilan(id) >= SURE_MS) {
+    $("hata").textContent = "Bu ID'nin süresi dolmuş."; return;
+  }
+  aktifId = id; sinirsiz = (id === SINIRSIZ_ID);
+  $("hata").textContent = ""; $("idKutu").value = "";
+  $("giris").classList.add("hidden");
+  $("chat").innerHTML = "";
+  yaz(sinirsiz ? "Hoş geldin! Sınırsız kullanımdasın." : "Hoş geldin! " + SURE_DK + " dakikalık kullanım hakkın var.", "inf");
+  yaz("Merhaba! Bir şey sor.", "bot");
+  $("q").disabled = false; $("q").focus();
+  if (sinirsiz) { $("sure").textContent = "♾️ Sınırsız"; }
+  else {
+    bitis = Date.now() + (SURE_MS - kullanilan(id));
+    sayac = setInterval(tik, 1000); tik();
+  }
+}
+
+function tik() {
+  const kalan = bitis - Date.now();
+  if (kalan <= 0) { sureBitti(); return; }
+  yazDepo("ag_kullanim_" + aktifId, String(SURE_MS - kalan));
+  const dk = Math.floor(kalan / 60000), sn = Math.floor(kalan % 60000 / 1000);
+  $("sure").textContent = "⏱ " + dk + ":" + String(sn).padStart(2, "0");
+}
+
+function durdur() { if (sayac) clearInterval(sayac); sayac = null; }
+
+function sureBitti() {
+  yazDepo("ag_kullanim_" + aktifId, String(SURE_MS));
+  durdur(); $("q").disabled = true; $("sure").textContent = "⏱ 0:00";
+  yaz("Süren doldu. Başka bir ID ile giriş yapabilirsin.", "inf");
+  setTimeout(cikis, 2500);
+}
+
+function cikis() {
+  if (!sinirsiz && aktifId && sayac) tik();
+  durdur(); aktifId = null; $("sure").textContent = "";
+  $("giris").classList.remove("hidden"); $("idKutu").focus();
+}
+
+$("bGiris").onclick = giris;
+$("idKutu").addEventListener("keydown", e => { if (e.key === "Enter") giris(); });
+$("bCikis").onclick = cikis;
+
+$("f").onsubmit = e => {
+  e.preventDefault();
+  if (!aktifId) return;
+  const ham = $("q").value.trim(); if (!ham) return;
+  $("q").value = ""; yaz(ham, "me");
+  const k = bul(temiz(ham));
+  yaz(k ? bilgi[k] : "Bunu bilmiyorum.", "bot");
+};
+
+$("idKutu").focus();
+</script>
+</body>
+</html>

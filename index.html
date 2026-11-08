@@ -283,7 +283,20 @@ function cevapla(metin) {
     return aktiviteyeCevap(metin);
   }
   cevapBekliyor = karsilikliNiyetler.has(k);
-  return k ? bilgi[k] : "Bunu bilmiyorum.";
+  if (k) return bilgi[k];
+  const bilinmeyenCevaplar = [
+    "Bunu tam anlayamadım. Bugün neler yapıyorsun?",
+    "Güzelmiş! Biraz daha anlatır mısın?",
+    "Peki, sonra ne oldu?",
+    "Anladım 🙂 Bu konuda en çok neyi seviyorsun?",
+    "İlginç! Biraz daha sohbet edelim mi?",
+    "Hmm, bunu biraz açar mısın?",
+    "Peki sen ne düşünüyorsun?",
+    "Anladım. Başka nelerden hoşlanırsın?",
+    "Bunu yeni duydum! Bana biraz daha anlat.",
+    "Peki, bugün seni en çok ne mutlu etti?"
+  ];
+  return bilinmeyenCevaplar[Math.floor(Math.random() * bilinmeyenCevaplar.length)];
 }
 
 function giris() {

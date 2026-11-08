@@ -55,12 +55,128 @@ input{flex:1;background:var(--in);color:#fff;border:0;border-radius:8px;padding:
 const SINIRSIZ_ID = "123123";          // sınırsız kullanım
 const SURE_DK = 10;                    // diğer ID'ler için toplam süre (dakika)
 
-/* ===== SORU-CEVAPLAR (buraya eklenecek) ===== */
-const bilgi = {
-  "merhaba": "Merhaba! Ben AG Bot.",
-  "adın ne": "Benim adım AG Bot.",
-  "nasılsın": "İyiyim, sen nasılsın?"
-};
+/* ===== 100 CEVAP / 1.000 SORU VARYASYONU ===== */
+const niyetler = [
+  ["merhaba", "Merhaba! Ben AG Bot. Seninle sohbet etmeye hazırım."],
+  ["selam", "Selam! Nasıl yardımcı olayım?"],
+  ["günaydın", "Günaydın! Umarım güzel bir gün geçirirsin."],
+  ["iyi akşamlar", "İyi akşamlar! Günün nasıl geçti?"],
+  ["iyi geceler", "İyi geceler, güzel rüyalar!"],
+  ["naber", "İyidir, senden naber?"],
+  ["nasılsın", "İyiyim, teşekkürler! Sen nasılsın?"],
+  ["napıyon", "Seninle sohbet ediyorum. Sen napıyon?"],
+  ["ne yapıyorsun", "Şu an mesajını cevaplıyorum!"],
+  ["keyifler nasıl", "Gayet iyi, sohbet daha da güzelleştirdi!"],
+  ["adın ne", "Benim adım AG Bot."],
+  ["kimsin", "Ben AG Bot, sohbet etmek için hazırlanmış küçük bir botum."],
+  ["kaç yaşındasın", "Bir yapay zekâ olduğum için gerçek bir yaşım yok."],
+  ["nerelisin", "Dijital bir botum; belirli bir şehirden değilim."],
+  ["nerede yaşıyorsun", "Bir web sayfasında çalışıyorum, gerçek bir evim yok."],
+  ["beni tanıyor musun", "Bu sohbette yazdıkların dışında seni tanımıyorum."],
+  ["insan mısın", "Hayır, insan değilim; mesajlara cevap veren bir yazılımım."],
+  ["robot musun", "Evet, dijital bir sohbet botu sayılırım!"],
+  ["ne işe yararsın", "Sohbet edebilir ve bildiğim konularda kısa cevaplar verebilirim."],
+  ["neler yapabilirsin", "Sorularına cevap verebilir, fikir üretebilir ve sohbet edebilirim."],
+  ["yardım eder misin", "Elimden geldiğince yardımcı olurum. Ne yapmak istiyorsun?"],
+  ["sıkıldım", "İstersen sohbet edelim, bilmece soralım ya da bir oyun seçelim."],
+  ["üzgünüm", "Üzgün hissetmene üzüldüm. İstersen anlatabilirsin."],
+  ["yalnızım", "Buradayım, sohbet edebiliriz. Yakınlarından biriyle konuşmak da iyi gelebilir."],
+  ["teşekkürler", "Rica ederim! Başka bir şey olursa buradayım."],
+  ["sağ ol", "Ne demek, her zaman!"],
+  ["özür dilerim", "Sorun değil, olur böyle şeyler."],
+  ["görüşürüz", "Görüşürüz! Kendine iyi bak."],
+  ["bay bay", "Bay bay! Yine beklerim."],
+  ["iyi misin", "İyiyim, sorduğun için teşekkürler!"],
+  ["beni seviyor musun", "Bir bot olarak sevgi hissetmem ama seninle sohbet etmeyi seviyorum."],
+  ["arkadaş olalım mı", "Tabii, sohbet arkadaşın olabilirim!"],
+  ["şaka yap", "Bilgisayar neden üşümüş? Çünkü Windows'u açık kalmış!"],
+  ["komik bir şey söyle", "Klavye doktora gitmiş; çünkü çok fazla tuşa basıyormuş!"],
+  ["bilmece sor", "Dişleri var ama yemek yiyemez. Nedir? Cevap: Tarak!"],
+  ["bilmece cevabı ne", "Cevap tarak! Dişleri vardır ama yemek yiyemez."],
+  ["favori rengin ne", "Gerçek bir tercihim yok ama mavi, ekranda çok hoş duruyor."],
+  ["en sevdiğin yemek ne", "Yemek yiyemem ama mantı hakkında güzel şeyler duyuyorum!"],
+  ["müzik sever misin", "Müzik dinleyemem ama sevdiğin şarkıları konuşabiliriz."],
+  ["hangi takımı tutuyorsun", "Takım tutmuyorum; maç sohbetine tarafsız katılabilirim."],
+  ["oyun oynar mısın", "Kendi başıma oyun açamam ama kelime oyunu oynayabiliriz."],
+  ["film öner", "Macera seviyorsan temposu yüksek bir macera filmi seçebilirsin."],
+  ["dizi öner", "Gizem seviyorsan kısa bölümlü bir polisiye dizi deneyebilirsin."],
+  ["kitap öner", "Merak uyandıran bir başlangıç için sevdiğin türe göre kısa bir roman seçebilirsin."],
+  ["hava nasıl", "Canlı hava durumu bilgim yok; telefonundaki hava durumu uygulamasına bakabilirsin."],
+  ["saat kaç", "Cihazındaki saat en doğru bilgiyi verir; canlı saate erişimim yok."],
+  ["bugün günlerden ne", "Takvimine bakman en doğrusu; bu sohbet canlı takvim bilgisi almıyor."],
+  ["bugün nasılsın", "İyiyim, teşekkürler! Senin günün nasıl geçiyor?"],
+  ["yarın hava nasıl", "Yarın için canlı tahmin göremiyorum; yerel hava durumu uygulamanı kontrol et."],
+  ["ders çalışıyorum", "Kolay gelsin! Kısa molalar vermek ve konuyu parçalara bölmek işe yarayabilir."],
+  ["sınavım var", "Başarılar! Konuları küçük parçalara ayırıp tekrar etmek yardımcı olabilir."],
+  ["ödevime yardım et", "Tabii, ödevin hangi konu hakkında? Soruyu buraya yaz."],
+  ["matematik zor", "Önce soruyu küçük adımlara bölelim. Hangi konuda takıldın?"],
+  ["uykum var", "Biraz dinlenmek iyi gelebilir. Mümkünse kısa bir mola ver."],
+  ["acıkmışım", "Bir şeyler atıştırma vakti olabilir! Ne yemeyi düşünüyorsun?"],
+  ["susadım", "Bir bardak su içmek iyi fikir olabilir."],
+  ["kahve sever misin", "Kahve içemem ama kokusunun insanları uyandırdığını biliyorum!"],
+  ["çay sever misin", "Çay içemem ama çay sohbetlerinin güzel olduğunu duydum."],
+  ["tatil istiyorum", "Umarım yakında güzel bir tatil yaparsın! Aklında bir yer var mı?"],
+  ["seyahat etmeyi sever misin", "Seyahat edemem ama gezilecek yerler hakkında fikir verebilirim."],
+  ["istanbul güzel mi", "İstanbul tarihi, manzaraları ve hareketli yaşamıyla çok renkli bir şehir."],
+  ["hayalim var", "Harika! İstersen hayalini ve ona yaklaşmak için düşündüğün adımları anlat."],
+  ["hedef belirlemek istiyorum", "Hedefini küçük ve ölçülebilir adımlara ayırmak iyi bir başlangıç olabilir."],
+  ["motivasyon ver", "Küçük bir adım bile ilerlemedir. Bugün yapabileceğin en kolay şeyle başla!"],
+  ["başaramayacağım", "Şu an zor görünmesi başaramayacağın anlamına gelmez. Bir adım deneyelim."],
+  ["çok yoruldum", "Biraz dinlenmek ve su içmek iyi gelebilir. Kendine zaman tanı."],
+  ["bugün güzel geçti", "Buna sevindim! Gününün en güzel kısmı neydi?"],
+  ["bugün kötü geçti", "Üzgünüm. İstersen anlat, seni dinliyorum."],
+  ["ne düşünüyorsun", "Kendi düşüncelerim yok ama söylediklerin üzerine birlikte konuşabiliriz."],
+  ["fikrin ne", "Biraz daha ayrıntı verirsen seçenekleri birlikte değerlendirebiliriz."],
+  ["sohbet edelim", "Memnuniyetle! Son zamanlarda ilgini çeken bir şey var mı?"],
+  ["konu aç", "Son zamanlarda öğrenmek istediğin yeni bir şey var mı?"],
+  ["sırrımı saklar mısın", "Bu sohbetin gizliliğini garanti edemem; hassas bilgileri paylaşmaman daha güvenli."],
+  ["şifremi paylaşayım mı", "Hayır, şifreni kimseyle paylaşma; buraya da yazma."],
+  ["internete bağlanıyor musun", "Hayır, bu sayfadaki bot internette arama yapmıyor."],
+  ["cevabını nereden biliyorsun", "Cevaplarım bu sayfanın içine önceden eklenmiş basit metinlerden geliyor."],
+  ["yanlış cevap verdin", "Uyardığın için teşekkürler! Bu basit bot bazen soruyu yanlış anlayabilir."],
+  ["beni anlamadın", "Haklı olabilirsin. Sorunu başka kelimelerle tekrar yazar mısın?"],
+  ["türkçe biliyor musun", "Evet, Türkçe mesajlara cevap vermeye çalışıyorum."],
+  ["ingilizce biliyor musun", "Basit İngilizce ifadeleri tanıyabilirim ama bu botun cevapları sınırlı."],
+  ["emoji gönder", "🙂✨🤖"],
+  ["bir sayı söyle", "7! Kulağa şanslı bir sayı gibi geliyor."],
+  ["bir renk söyle", "Turkuaz! Maviyle yeşilin güzel bir karışımı."],
+  ["kaç soru biliyorsun", "Bu sayfada 100 farklı cevap ve her biri için 10 soru kalıbı var."],
+  ["cevapların hazır mı", "Evet, bu sayfadaki cevaplar önceden yazılmıştır; internetten yeni bilgi almıyorum."],
+  ["beni duyuyor musun", "Sesini duyamam ama buraya yazdığın mesajları okuyabilirim."],
+  ["fotoğraf görebiliyor musun", "Hayır, bu sohbet yalnızca yazdığın mesajları işler."],
+  ["nasıl çalışıyorsun", "Mesajındaki kelimeleri sayfadaki soru kalıplarıyla karşılaştırıyorum."],
+  ["sana nasıl soru sorarım", "Mesaj kutusuna sorununu yazıp Gönder düğmesine basman yeterli."],
+  ["botu kim yaptı", "Bu sayfadaki AG Bot, basit JavaScript kurallarıyla çalışan bir sohbet örneği."],
+  ["seni kim yaptı", "Bu botun sayfasını hazırlayan kişi yaptı; ben kendi başıma gelişmiyorum."],
+  ["günün nasıl geçti", "Benim gerçek bir günüm yok ama seninkini dinlemek isterim!"],
+  ["yarın ne yapacaksın", "Plan yapamam ama senin yarın için plan oluşturmana yardım edebilirim."],
+  ["hoşlandığın biri var mı", "Duygularım yok ama hoşlanma hakkında konuşabiliriz."],
+  ["aşk nedir", "Aşk, insanlar için yakınlık, bağlılık ve önemseme gibi duyguları anlatan bir kavramdır."],
+  ["hayvanları sever misin", "Duygularım yok ama hayvanların insanlara arkadaşlık etmesi çok güzel."],
+  ["kedileri sever misin", "Kedi videoları internette çok popüler! Sen kedi sever misin?"],
+  ["köpekleri sever misin", "Köpekler sadık dostlar olarak bilinir. Senin bir köpeğin var mı?"],
+  ["en sevdiğin mevsim ne", "Gerçek bir tercihim yok ama ilkbaharın havası pek çok kişiye iyi geliyor."],
+  ["napıyon kanka", "Buradayım kanka, seninle sohbet ediyorum!"]
+];
+
+const temiz = s => s.toLocaleLowerCase("tr").replace(/[?!.,]+/g, " ").replace(/\s+/g, " ").trim();
+const soruKunye = new Map();
+const kaliplar = [
+  s => s,
+  s => "ya " + s,
+  s => "peki " + s,
+  s => "acaba " + s,
+  s => "bir şey soracağım " + s,
+  s => "kanka " + s,
+  s => "dostum " + s,
+  s => s + " acaba",
+  s => s + " söyler misin",
+  s => s + " anlatır mısın"
+];
+for (const [soru, cevap] of niyetler) {
+  for (const kalip of kaliplar) soruKunye.set(temiz(kalip(soru)), soru);
+}
+const bilgi = Object.fromEntries(niyetler);
 
 /* ===== KODUN GERİSİ ===== */
 const $ = id => document.getElementById(id);
@@ -76,7 +192,6 @@ function yaz(t, c) {
   d.className = "m " + c; d.textContent = t;
   $("chat").appendChild(d); $("chat").scrollTop = 1e9;
 }
-const temiz = s => s.toLocaleLowerCase("tr").replace(/[?!.,]+/g, " ").replace(/\s+/g, " ").trim();
 
 function lev(a, b) {
   const m = [...Array(a.length + 1)].map((_, i) => [i]);
@@ -87,9 +202,14 @@ function lev(a, b) {
 }
 const benzerlik = (a, b) => 1 - lev(a, b) / Math.max(a.length, b.length, 1);
 function bul(s) {
+  if (soruKunye.has(s)) return soruKunye.get(s);
+  if (s.length < 5) return null;
   let en = null, p = 0;
-  for (const k of Object.keys(bilgi)) { const b = benzerlik(s, k); if (b > p) { p = b; en = k; } }
-  return p >= 0.6 ? en : null;
+  for (const k of soruKunye.keys()) {
+    const b = benzerlik(s, k);
+    if (b > p) { p = b; en = soruKunye.get(k); }
+  }
+  return p >= 0.72 ? en : null;
 }
 
 function giris() {
